@@ -3,7 +3,27 @@
 A small but *real* quantum circuit compiler and state-vector simulator, built for learning.
 
 BraKet takes a circuit written in a tiny text format and runs it through a genuine compiler
-pipeline before simulating it:
+pipeline before simulating it.
+
+## Features
+
+- **A real compiler pipeline**, not a black box: lexer → parser → optimizer → hardware router
+  → native-gate decomposer → state-vector simulator, each in its own readable module.
+- **Friendly, located error messages** with a caret pointing at the problem, like a real
+  compiler (`line 2, col 1: unknown gate 'FOO'`).
+- **A proper state-vector simulator** that applies any gate to any qubit(s) via tensor
+  reshaping — works for any number of qubits, no hard-coded special cases.
+- **Optimizations**: cancel self-inverse / inverse-pair gates and merge adjacent rotations.
+- **Hardware-aware routing** onto a linear nearest-neighbor chain by inserting SWAPs.
+- **Native-gate decomposition** to `{RZ, X90, CNOT}`, with every rewrite verified numerically.
+- **A decorated ASCII CLI** that draws the circuit, shows every compilation stage, and plots a
+  sampled-measurement histogram.
+- **A broad gate set**: `H X Y Z S SDG T TDG SX SXDG ID`, rotations `RX RY RZ P`, and two-qubit
+  `CNOT`/`CX` `CZ` `CY` `SWAP`.
+- **197 tests** checking exact analytical results and semantics-preservation across every stage,
+  including an optional cross-check against Qiskit.
+
+## Pipeline
 
 ```
 source text
@@ -73,7 +93,37 @@ braket run examples/bell_state.bkt --shots 1000
 python -m braket.cli run examples/bell_state.bkt --shots 1000
 ```
 
-*(The CLI arrives in milestone M7; earlier milestones are exercised through the tests.)*
+Flags: `--shots N` samples N measurements, `--seed S` makes sampling reproducible, and
+`--no-optimize` / `--no-map` / `--no-decompose` turn individual compiler stages off so you can
+see what each one does.
+
+### Sample output
+
+```
++-[ Circuit diagram (as written) ]-+
+| q0: -[H]--@--[M]-----            |
+|           |                      |
+| q1: -----(+)-----[M]-            |
++----------------------------------+
+
++-[ Native circuit  {RZ, X90, CNOT} ]-+
+| RZ(1.5708) q0                       |
+| X90 q0                              |
+| RZ(1.5708) q0                       |
+| CNOT q0 q1                          |
+| MEASURE q0                          |
+| MEASURE q1                          |
++-------------------------------------+
+
++-[ Sampled measurements (1000 shots; qubits q0, q1) ]-----+
+| 00  ######################################## 502 (50.2%) |
+| 11  ######################################## 498 (49.8%) |
++----------------------------------------------------------+
+
++-[ Pipeline self-check ]--------------------------+
+| compiled circuit matches original statistics: OK |
++--------------------------------------------------+
+```
 
 ## Test
 
@@ -95,3 +145,10 @@ Built milestone by milestone:
 | M5        | Native gate decomposition                              | done   |
 | M6        | Cross-check against qiskit (optional)                  | done   |
 | M7        | CLI + example circuits                                 | done   |
+
+Later additions: a broadened gate set and a decorated ASCII CLI (circuit diagrams + boxed
+output).
+
+## License
+
+Released under the [MIT License](LICENSE).

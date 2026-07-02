@@ -1,0 +1,10 @@
+# Normalize line endings: let Git store text files with LF and check them out
+# with the platform's native endings. This silences the "LF will be replaced by
+# CRLF" warnings on Windows.
+* text=auto
+
+# Always treat these as text.
+*.py    text
+*.bkt   text
+*.md    text
+*.toml  text
