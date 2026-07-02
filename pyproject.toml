@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "braket"
+version = "0.1.0"
+description = "BraKet — a small but real quantum circuit compiler and state-vector simulator"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+# Test-only dependencies. Install with:  pip install -e ".[dev]"
+dev = [
+    "pytest>=8.0",
+]
+# Optional: only needed to run the M6 Qiskit cross-check tests, which are skipped
+# automatically when qiskit is absent. Install with:  pip install -e ".[validation]"
+validation = [
+    "qiskit>=1.0",
+]
+
+[project.scripts]
+# Exposes the `braket` command once installed (`pip install -e .`).
+braket = "braket.cli:main"
+
+[tool.setuptools.packages.find]
+# Only package the `braket/` source dir, not tests/ or examples/.
+include = ["braket*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

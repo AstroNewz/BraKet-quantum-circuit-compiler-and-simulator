@@ -1,0 +1,12 @@
+# Bell state — the "hello world" of entanglement.
+#
+# H puts q0 into an equal superposition; CNOT then entangles q1 with it. The
+# result is (|00> + |11>)/sqrt(2): measuring the two qubits always gives matching
+# results (00 or 11, 50/50), never 01 or 10.
+qubits 2
+
+H q0
+CNOT q0 q1
+
+MEASURE q0
+MEASURE q1

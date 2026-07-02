@@ -1,0 +1,17 @@
+# Single-qubit interference (a Mach-Zehnder interferometer in gate form).
+#
+# The first H splits the qubit into two "paths" (|0> and |1>). RZ inserts a
+# relative phase between them, and the second H recombines the paths so they
+# interfere. With phase = pi the interference is fully destructive for outcome 0
+# and constructive for outcome 1, so the qubit flips to |1> with certainty.
+#
+# Try changing the phase: 0 gives |0>, pi gives |1>, and pi/2 (~1.5708) gives a
+# 50/50 result — a clean demonstration that phase, via interference, controls the
+# measured probabilities.
+qubits 1
+
+H q0
+RZ(3.14159265358979) q0
+H q0
+
+MEASURE q0

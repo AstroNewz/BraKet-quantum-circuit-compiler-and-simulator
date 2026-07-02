@@ -1,0 +1,14 @@
+# GHZ state — three-qubit maximal entanglement.
+#
+# A chain of CNOTs spreads q0's superposition across all three qubits, giving
+# (|000> + |111>)/sqrt(2). All three measurements are perfectly correlated: the
+# outcome is always 000 or 111, each with probability 1/2.
+qubits 3
+
+H q0
+CNOT q0 q1
+CNOT q1 q2
+
+MEASURE q0
+MEASURE q1
+MEASURE q2
